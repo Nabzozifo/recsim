@@ -174,14 +174,7 @@ We also maintain a time budget, which will cap the session length. In this scena
 Finally we will implement a score_document method, that maps a document to a non-negative real number. This significance of this will become clear shortly.
 """
 
-def associateTopicInterest(nb_topic=20):
-  ''' Topic =====> user's interest '''
-  qualite=quality(-3,0,0,3,14,6)
-  topic=Topic(qualite)
-  dico=dict(zip(topic.topic_list,list(np.random.uniform(-1,1,nb_topic))))
-  dico.update({0:0})
-  return dico
-associateTopicInterest()
+
 
 def associateTopicInterest(nb_topic=20):
   ''' Topic =====> user's interest '''
@@ -395,13 +388,8 @@ LTSUserModel = type("LTSUserModel", (user.AbstractUserModel,),
 """Finally, we assemble all components into an Environment."""
 
 slate_size = 3
- num_candidates = 10
- ltsenv = environment.Environment(
-            LTSUserModel(slate_size),
-            LTSDocumentSampler(),
-            num_candidates,
-            slate_size,
-            resample_documents=True)
+num_candidates = 10
+ltsenv = environment.Environment(LTSUserModel(slate_size),LTSDocumentSampler(),num_candidates,slate_size,resample_documents=True)
 
 """## Recap
 Before we conclude, let's take a second to recap everything we've done so far. The diagram below maps all the classes we've implemented/imported from RecSim to the functional diagram of RecSim.
