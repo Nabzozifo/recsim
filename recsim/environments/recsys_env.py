@@ -387,10 +387,10 @@ LTSUserModel = type("LTSUserModel", (user.AbstractUserModel,),
 
 """Finally, we assemble all components into an Environment."""
 
-slate_size = 3
+'''slate_size = 3
 num_candidates = 10
 ltsenv = environment.Environment(LTSUserModel(slate_size),LTSDocumentSampler(),num_candidates,slate_size,resample_documents=True)
-
+'''
 """## Recap
 Before we conclude, let's take a second to recap everything we've done so far. The diagram below maps all the classes we've implemented/imported from RecSim to the functional diagram of RecSim.
 ![RecSim implementation](https://github.com/google-research/recsim/blob/master/recsim/colab/figures/simulator_implemented.png?raw=true)
@@ -409,26 +409,21 @@ def clicked_engagement_reward(responses):
 
 """Now, we simply use the OpenAI gym wrapper, which essentially provides a familiar step-based API."""
 
-lts_gym_env = recsim_gym.RecSimGymEnv(ltsenv, clicked_engagement_reward)
-
-observation_0 = lts_gym_env.reset()
-"""print('Observation 0')
-print('Available documents')
-doc_strings = ['doc_id ' + key  + str(value) for key, value
-               in observation_0['doc'].items()]
-print('\n'.join(doc_strings))
-print('Noisy user state observation')
-print(observation_0['user'])
-# Agent recommends the first three documents.
-recommendation_slate_0 = [0, 1, 2]
-observation_1, reward, done, _ = lts_gym_env.step(recommendation_slate_0)
-print('Observation 1')
-print('Available documents')
-doc_strings = ['doc_id ' + key +  str(value) for key, value
-               in observation_1['doc'].items()]
-print('\n'.join(doc_strings))
-rsp_strings = [str(response) for response in observation_1['response']]
-print('User responses to documents in the slate')
-print('\n'.join(rsp_strings))
-print('Noisy user state observation')
-print(observation_1['user'])"""
+def create_environment(env_config):
+  """Creates an interest exploration environment."""
+  document_sampler = LTSDocumentSampler()
+  UserModel = type("LTSUserModel", (user.AbstractUserModel,),
+                    {"__init__": user_init,
+                     "is_terminal": is_terminal,
+                     "update_state": update_state,
+                     "simulate_response": simulate_response,
+                     "_generate_response": generate_response})
+  
+  ltsenv = environment.Environment(
+          UserModel,
+          document_sampler,
+          env_config['num_candidates'],
+          env_config['slate_size'],
+          resample_documents=True)
+  
+  return recsim_gym.RecSimGymEnv(ltsenv, clicked_engagement_reward)
