@@ -45,10 +45,6 @@ Thus, the goal is to find the optimal mix of chocolatey and kaley items so as to
 We will discuss the particular functional forms for the various components as we go along.
 """
 
-!pip install recsim
-
-# @title Install
-!pip install --upgrade --no-cache-dir recsim
 
 #@title Generic imports
 import numpy as np
