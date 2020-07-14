@@ -412,7 +412,7 @@ def clicked_engagement_reward(responses):
 lts_gym_env = recsim_gym.RecSimGymEnv(ltsenv, clicked_engagement_reward)
 
 observation_0 = lts_gym_env.reset()
-print('Observation 0')
+"""print('Observation 0')
 print('Available documents')
 doc_strings = ['doc_id ' + key  + str(value) for key, value
                in observation_0['doc'].items()]
@@ -431,4 +431,4 @@ rsp_strings = [str(response) for response in observation_1['response']]
 print('User responses to documents in the slate')
 print('\n'.join(rsp_strings))
 print('Noisy user state observation')
-print(observation_1['user'])
+print(observation_1['user'])"""
