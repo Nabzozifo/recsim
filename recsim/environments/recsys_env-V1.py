@@ -102,13 +102,6 @@ class LTSDocumentSampler(document.AbstractDocumentSampler):
 
 """#A User Model"""
 
-def associateTopicInterest(nb_topic=20):
-  ''' Topic =====> user's interest '''
-  qualite=quality(-3,0,0,3,14,6)
-  topic=Topic(qualite)
-  dico=dict(zip(topic.topic_list,list(np.random.uniform(-1,1,nb_topic))))
-  dico.update({0:0})
-  return dico
 
 def associateTopicInterest(nb_topic=20):
   ''' Topic =====> user's interest '''
@@ -137,22 +130,6 @@ class LTSUserState(user.AbstractUserState):
     self.satisfaction = satisfaction
     self.time_budget = time_budget
 
-    
-
-  def create_observation(self):
-    """User's state is not observable."""
-    """clip_low, clip_high = (-1.0 / (1.0 * self._observation_noise),
-                           1.0 / (1.0 * self._observation_noise))
-    noise = stats.truncnorm(
-        clip_low, clip_high, loc=0.0, scale=self._observation_noise).rvs()
-    noisy_sat = self.satisfaction + noise"""
-    inters=list(self.interest.values())
-    return np.array([inters,self.satisfaction,])
-
-  @staticmethod
-  def observation_space():
-    #return spaces.Box(low=np.array([-3.0,-1.0]),high=np.array([1.0,3.0]), dtype=np.float32)
-    return spaces.Box(shape=(2,), dtype=np.float32, low=-3.0, high=3.0)
   
   def create_observation(self):
     return {'interest': np.array(list(self.interest.values())).astype(float), 'satisfaction': np.array(self.satisfaction)}
@@ -325,13 +302,13 @@ LTSUserModel = type("LTSUserModel", (user.AbstractUserModel,),
 """Finally, we assemble all components into an Environment."""
 
 slate_size = 3
- num_candidates = 10
- ltsenv = environment.Environment(
-            LTSUserModel(slate_size),
-            LTSDocumentSampler(),
-            num_candidates,
-            slate_size,
-            resample_documents=True)
+num_candidates = 10
+ltsenv = environment.Environment(
+          LTSUserModel(slate_size),
+          LTSDocumentSampler(),
+          num_candidates,
+          slate_size,
+          resample_documents=True)
 
 """## Interacting with an agent
 
