@@ -288,13 +288,13 @@ LTSUserModel = type("LTSUserModel", (user.AbstractUserModel,),
 """Finally, we assemble all components into an Environment."""
 
 slate_size = 3
- num_candidates = 10
- ltsenv = environment.Environment(
-            LTSUserModel(slate_size),
-            LTSDocumentSampler(),
-            num_candidates,
-            slate_size,
-            resample_documents=True)
+num_candidates = 10
+ltsenv = environment.Environment(
+    LTSUserModel(slate_size),
+    LTSDocumentSampler(),
+    num_candidates,
+    slate_size,
+    resample_documents=True)
 
 def click_engagement_reward(responses):
   reward = 0.0
