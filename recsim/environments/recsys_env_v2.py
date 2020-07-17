@@ -184,13 +184,12 @@ class LTSResponse(user.AbstractResponse):
   MAX_SATISFACTION_MAGNITUDE = 10.0
   MAX_WATCHTIME_MAGNITUDE = 10.0
 
-  def __init__(self,click=False,watch_time=120,quality=0,cluster_id=0):#,engagement=0.0,satisfaction=0.0,):
+  def __init__(self,click=False,watch_time=120,quality=0,cluster_id=0):
     self.click = click
     self.watch_time=watch_time
     self.quality=quality
     self.cluster_id=cluster_id
-    '''self.engagement=engagement
-    self.satisfaction=satisfaction'''
+    
 
   def create_observation(self):
     return {'click': int(self.click),
@@ -208,8 +207,8 @@ class LTSResponse(user.AbstractResponse):
             
         'watch_time':
             spaces.Box(
-                low=0,
-                high=120,
+                low=-3,
+                high=3,
                 shape=tuple(),
                 dtype=np.float32),
             
@@ -254,20 +253,17 @@ def simulate_response(self, slate_documents):
                           responses[selected_index])
   return responses
 
-def generate_response(self, doc, response,alpha=0.1):
+def generate_response(self, doc, response,alpha=1):
   response.click = True
-  response.satisfaction=(1-alpha)*self._user_state.interest[doc.topic]+(alpha*doc.inhquality)
-  bonus=(0.9/3.4)*doc.length*response.satisfaction
+  bonus=(0.9/3.4)*doc.length*(1-alpha)*self._user_state.interest[doc.topic]+(alpha*doc.inhquality)
   response.quality=doc.inhquality
-  response.engagement = bonus
-  response.watch_time = self._user_state.time_budget
+  response.watch_time = bonus
   response.cluster_id=doc.topic
 
-def update_state(self, slate_documents, responses):
+def update_state(self, slate_documents, responses,alpha=1):
   for doc, response in zip(slate_documents, responses):
     if response.click:
-      self._user_state.satisfaction = response.satisfaction
-      self._user_state.time_budget += response.engagement
+      self._user_state.satisfaction = (1-alpha)*self._user_state.interest[doc.topic]+(alpha*doc.inhquality)
       return
 
 """Finally, the session expires when the time budget goes to 0."""
