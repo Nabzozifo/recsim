@@ -306,3 +306,35 @@ def click_engagement_reward(responses):
 """Now, we simply use the OpenAI gym wrapper, which essentially provides a familiar step-based API."""
 
 lts_gym_env = recsim_gym.RecSimGymEnv(ltsenv, click_engagement_reward)
+
+def create_environment(env_config):
+  """Creates an interest evolution environment."""
+  slate_size=env_config['slate_size']
+  seed=env_config['seed']
+  def user_init(self,
+              slate_size,
+              seed=0):
+
+    super(LTSUserModel,
+          self).__init__(LTSResponse,
+                          LTSStaticUserSampler(LTSUserState,
+                                              seed=seed), slate_size)
+    self.choice_model = MultinomialLogitChoiceModel({})
+    
+  
+  LTSUserModel = type("LTSUserModel", (user.AbstractUserModel,),
+                    {"__init__": user_init,
+                     "is_terminal": is_terminal,
+                     "update_state": update_state,
+                     "simulate_response": simulate_response,
+                     "_generate_response": generate_response})
+  
+  ltsenv = environment.Environment(
+            LTSUserModel(env_config['slate_size']),
+            LTSDocumentSampler(),
+            env_config['num_candidates'],
+            env_config['slate_size'],
+            resample_documents=env_config['resample_documents'])
+  
+  
+  return recsim_gym.RecSimGymEnv(ltsenv, click_engagement_reward)
