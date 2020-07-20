@@ -450,7 +450,7 @@ class IEvUserModel(user.AbstractUserModel):
     """
     # Add null doc
     nulldoc=IEvdoc(None,np.zeros(20),-1,quality=0)
-    documents.append(nulldoc)
+    documents[len(documents)-1]=nulldoc
 
     # List of empty responses
     responses = [self._response_model_ctor() for _ in documents]
