@@ -43,7 +43,7 @@ class ResponseAdapter(object):
           (single float) key-value pairs.
     """
     self._input_response_space = input_response_space
-    self._single_response_space = input_response_space.spaces
+    self._single_response_space = input_response_space.spaces[0]
     self._response_names = list(self._single_response_space.spaces.keys())
     self._response_shape = (len(input_response_space.spaces),
                             len(self._response_names))
