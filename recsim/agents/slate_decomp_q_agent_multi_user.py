@@ -510,7 +510,7 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
         q_value_list.append(self.network(user, doc, scope))
       q_values = tf.concat(q_value_list, axis=1)
 
-    return dqn_agent_multi_user_multi_user.DQNNetworkType(q_values)
+    return dqn_agent_multi_user.DQNNetworkType(q_values)
 
   def _build_networks(self):
     with tf.name_scope('networks'):
