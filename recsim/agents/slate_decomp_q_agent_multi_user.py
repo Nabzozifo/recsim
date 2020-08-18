@@ -470,7 +470,7 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
     self._cluster_id_response_index = response_names.index('cluster_id')
 
     self._env_action_space = action_space
-    self._num_candidates = int(action_space.nvec[0])
+    self._num_candidates = int(action_space[0].nvec[0])
     abstract_agent.AbstractMultiUserEpisodicRecommenderAgent.__init__(self, action_space)
 
     # The doc score is a [num_candidates] vector.
