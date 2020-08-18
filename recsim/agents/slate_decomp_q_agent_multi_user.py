@@ -17,7 +17,7 @@ import gin.tf
 import numpy as np
 from recsim import agent as abstract_agent
 from recsim import choice_model
-from recsim.agents.dopamine import dqn_agent_multi_user
+from recsim.agents.dopamine import dqn_agent
 import tensorflow.compat.v1 as tf
 
 
@@ -427,7 +427,7 @@ def compute_target_optimal_q(reward, gamma, next_actions, next_q_values,
 
 
 @gin.configurable
-class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
+class SlateDecompQAgent(dqn_agent.DQNAgentRecSim,
                         abstract_agent.AbstractMultiUserEpisodicRecommenderAgent):
   """A recommender agent implements DQN using slate decomposition techniques."""
 
@@ -455,7 +455,8 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
       eval_mode: A bool for whether the agent is in training or evaluation mode.
       **kwargs: Keyword arguments to the DQNAgent.
     """
-    self._response_adapter = dqn_agent_multi_user.ResponseAdapter(
+    abstract_agent.AbstractMultiUserEpisodicRecommenderAgent.__init__(self, action_space)
+    self._response_adapter = dqn_agent.ResponseAdapter(
         observation_space.spaces['response'])
     response_names = self._response_adapter.response_names
     expected_response_names = ['click', 'watch_time']
@@ -470,8 +471,8 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
     self._cluster_id_response_index = response_names.index('cluster_id')
 
     self._env_action_space = action_space
-    self._num_candidates = int(action_space[0].nvec[0])
-    abstract_agent.AbstractMultiUserEpisodicRecommenderAgent.__init__(self, action_space)
+    self._num_candidates = int(action_space.nvec[0])
+    
 
     # The doc score is a [num_candidates] vector.
     self._doc_affinity_scores_ph = tf.placeholder(
@@ -482,7 +483,7 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
     self._select_slate_fn = select_slate_fn
     self._compute_target_fn = compute_target_fn
 
-    dqn_agent_multi_user.DQNAgentRecSim.__init__(
+    dqn_agent.DQNAgentRecSim.__init__(
         self,
         sess,
         observation_space,
@@ -509,7 +510,7 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
         q_value_list.append(self.network(user, doc, scope))
       q_values = tf.concat(q_value_list, axis=1)
 
-    return dqn_agent_multi_user.DQNNetworkType(q_values)
+    return dqn_agent.DQNNetworkType(q_values)
 
   def _build_networks(self):
     with tf.name_scope('networks'):
@@ -680,7 +681,7 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
     Returns:
       A WrapperReplayBuffer object.
     """
-    return dqn_agent_multi_user.wrapped_replay_buffer(
+    return dqn_agent.wrapped_replay_buffer(
         observation_shape=self.observation_shape,
         stack_size=self.stack_size,
         use_staging=use_staging,
