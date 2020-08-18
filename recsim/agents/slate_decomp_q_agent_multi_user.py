@@ -681,7 +681,7 @@ class SlateDecompQAgent(dqn_agent_multi_user.DQNAgentRecSim,
     Returns:
       A WrapperReplayBuffer object.
     """
-    return dqn_agent_multi_user_multi_user.wrapped_replay_buffer(
+    return dqn_agent_multi_user.wrapped_replay_buffer(
         observation_shape=self.observation_shape,
         stack_size=self.stack_size,
         use_staging=use_staging,
