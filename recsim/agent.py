@@ -201,7 +201,7 @@ class AbstractMultiUserEpisodicRecommenderAgent(
     Args:
       action_space: A gym.spaces object that specifies the format of actions.
     """
-    self._num_users = len(action_space[0])
+    self._num_users = len(action_space)
     if not self._num_users > 0:
       raise ValueError('Multi-user agent must have at least 1 user.')
     super(AbstractMultiUserEpisodicRecommenderAgent, self).__init__(
