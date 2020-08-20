@@ -127,11 +127,12 @@ class AbstractEpisodicRecommenderAgent(AbstractRecommenderAgent):
         index into the list of doc_obs
     """
     self._episode_num += 1
-    if (self.multi_user) :
+    return self.step(0, observation)
+    """if (self.multi_user) :
       obs=[self.step(0, observation) for _ in range(self._num_users)]
       return obs
-    else :
-      return self.step(0, observation)
+    else :"""
+    
 
   def end_episode(self, reward, observation=None):
     """Signals the end of the episode to the agent.
