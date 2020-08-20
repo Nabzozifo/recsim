@@ -50,10 +50,17 @@ class RandomAgent(agent.AbstractMultiUserEpisodicRecommenderAgent):
     """
     del reward  # Unused argument.
     doc_obs = observation['doc']
-
-    # Simulate a random slate
-    doc_ids = list(range(len(doc_obs)))
-    self._rng.shuffle(doc_ids)
-    slate = doc_ids[:self._slate_size]
-    logging.debug('Recommended slate: %s', slate)
-    return slate
+    num_user=len(observation['user'])
+    if num_user>1 :
+      doc_ids = list(range(len(doc_obs)))
+      self._rng.shuffle(doc_ids)
+      slate = [doc_ids[:self._slate_size] for _ in range(num_user)]
+      logging.debug('Recommended slate: %s', slate)
+      return slate
+    else :
+      # Simulate a random slate
+      doc_ids = list(range(len(doc_obs)))
+      self._rng.shuffle(doc_ids)
+      slate = doc_ids[:self._slate_size]
+      logging.debug('Recommended slate: %s', slate)
+      return slate
